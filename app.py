@@ -81,3 +81,12 @@ if ticker_symbol:
                     st.success("✅ 財務優良（50%以上）")
     else:
         st.error("財務データが取得できませんでした。しばらく時間を置いてから再度お試しください。")
+    # スペシャルシチュエーション用メモ
+    print("-" * 50)
+    print("【メモ】")
+    if pbr < 1: print("・PBR1倍割れ：資産価値に対して割安の可能性があります。")
+    if dividend_yield > 3: print("・高配当：インカムゲインの魅力があります。")
+    if eq_ratio > 70: print("・鉄壁の財務：不況にも強い可能性があります。")
+
+# 実行
+deep_analyze_stock(ticker_symbol)
