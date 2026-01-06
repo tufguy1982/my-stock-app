@@ -51,7 +51,7 @@ if ticker_symbol:
     
     # ユーザーがチェックできるように配置
     for i, sit in enumerate(situations):
-        cols[i % 4].checkbox(sit)
+        cols[i % 4].checkbox(sit,key=sit)
 
     # --- 4. 業績推移グラフ ---
     if not hist_financials.empty:
@@ -92,3 +92,32 @@ if ticker_symbol:
                     st.success("✅ 財務優良（50%以上）")
     else:
         st.error("現在、財務データを取得できません。Yahoo Financeの制限がかかっている可能性があります。しばらく待ってから再読み込みしてください。")
+            # --- 6. スプレッドシート出力用（CSVダウンロード） ---
+    st.divider()
+    st.subheader("分析結果の保存")
+
+    # 保存するデータの作成
+    save_data = {
+        "銘柄コード": [ticker_symbol],
+        "銘柄名": [info.get('longName', ticker_symbol)],
+        "現在株価": [current_price],
+        "PBR": [pbr],
+        "配当利回り": [dividend_yield],
+        "自己資本比率": [eq_ratio if 'eq_ratio' in locals() else "N/A"],
+        "取得日": [pd.Timestamp.now().strftime('%Y-%m-%d')]
+    }
+    
+    # チェックしたシチュエーションを文字列にまとめる
+    selected_sits = [sit for sit in situations if st.session_state.get(sit)]
+    save_data["シチュエーション"] = [", ".join(selected_sits)]
+
+    df_save = pd.DataFrame(save_data)
+
+    # ダウンロードボタン
+    csv = df_save.to_csv(index=False).encode('utf_8_sig') # 日本語文字化け対策
+    st.download_button(
+        label="分析結果をCSVでダウンロード",
+        data=csv,
+        file_name=f"analysis_{ticker_symbol}.csv",
+        mime="text/csv",
+    )
