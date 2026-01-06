@@ -63,3 +63,15 @@ if ticker_symbol:
 
     if pbr < 1:
         st.info("✅ PBR 1倍割れ: 資産価値から見て割安圏内です。")
+        # 自己資本比率とROEの表示
+    bs = stock.balance_sheet.T
+    if not bs.empty and not hist_financials.empty:
+        st.subheader("分析結果")
+        equity = bs.get('Stockholders Equity', pd.Series([0])).iloc[0]
+        assets = bs.get('Total Assets', pd.Series([1])).iloc[0]
+        eq_ratio = (equity / assets) * 100
+        
+        # 表示
+        st.write(f"自己資本比率: {eq_ratio:.1f}%")
+        if eq_ratio >= 50:
+            st.success("✅ 財務優良（50%以上）")
