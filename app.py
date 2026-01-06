@@ -14,14 +14,14 @@ if ticker_symbol:
     # データ取得
     stock = yf.Ticker(ticker_symbol)
     try:
-    info = stock.info
-except:
-    info = {"longName": ticker_symbol} # エラー時に名前だけでも表示
+        info = stock.info  #
+    except:
+           info = {"longName": ticker_symbol} # エラー時に名前だけでも表示
 
-# 指標を個別に取得（infoがダメな時の保険）
-current_price = info.get('currentPrice') or stock.history(period="1d")['Close'].iloc[-1]
-pbr = info.get('priceToBook') or 0
-# ...以下続く
+    # 指標を個別に取得（infoがダメな時の保険）
+    current_price = info.get('currentPrice') or stock.history(period="1d")['Close'].iloc[-1]
+    pbr = info.get('priceToBook') or 0
+    # ...以下続く
     hist_financials = stock.financials.T
     
     # 銘柄名の表示
